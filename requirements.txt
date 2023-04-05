@@ -7,3 +7,4 @@ flask
 uvicorn
 fastparquet
 fastapi
+memory_profiler
