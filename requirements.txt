@@ -6,3 +6,4 @@ pickleshare
 flask
 uvicorn
 fastparquet
+fastapi
