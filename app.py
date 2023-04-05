@@ -15,28 +15,29 @@ def home():
 
 @app.route('/recommend', methods=['POST'])
 def recommend_movies():
-    movie = request.json['movie']
-    if not movie:
-        return jsonify({'error': 'Please provide a movie name.'}), 400
-    indices = new_data['title'][(new_data['title'].str.contains(movie))|(new_data['title'].str.lower().str.contains(movie))].index
-    # print(indices)
-    if len(indices) == 0:
-      similar = []
-      print("No matching movies found for input: ", movie)
-      return {'recommendations': similar}
-    input = vectors.toarray()[indices[0]]
-    distances_movies, indices_movies = model.kneighbors([input])
-    # print(distances_movies)
-    lst = []
-    for indices in indices_movies:
-        lst.extend(indices)
-    similar = []
-    for i in lst:
-        similar.append((new_data.iloc[i].title,str(new_data.iloc[i].id)))
+    try:
+        movie = request.json['movie']
+        if not movie:
+            return jsonify({'error': 'Please provide a movie name.'}), 400
+        indices = new_data['title'][(new_data['title'].str.contains(movie))|(new_data['title'].str.lower().str.contains(movie))].index
+        if len(indices) == 0:
+            similar = []
+            return {'recommendations': similar}
+        input = vectors.toarray()[indices[0]]
+        distances_movies, indices_movies = model.kneighbors([input])
+        lst = []
+        for indices in indices_movies:
+            lst.extend(indices)
+        similar = []
+        for i in lst:
+            similar.append((new_data.iloc[i].title,str(new_data.iloc[i].id)))
+        return jsonify({'recommendations': similar})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
 
-    return {'recommendations': similar}
 # recommend_movies('Spider-Man')
 
 if __name__ == '__main__':
-	app.run(debug=True)
+    app.run(host='0.0.0.0', port=8000)
 
