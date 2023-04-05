@@ -1,4 +1,4 @@
-#python -m uvicorn main:app --host 0.0.0.0 --port 10000
+#python -m uvicorn app1:app1 --host 0.0.0.0 --port 10000
 import pandas as pd
 import uvicorn
 import json
